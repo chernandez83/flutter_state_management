@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_state_management/Counter.dart';
+import 'package:flutter_state_management/Counter2.dart';
 import 'package:flutter_state_management/TextCounter.dart';
 import 'package:provider/provider.dart';
 
@@ -19,10 +20,13 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrangeAccent),
         useMaterial3: true,
       ),
-      home: ChangeNotifierProvider(
-        create: (BuildContext context) => Counter(),
-        child: const MyHomePage(title: 'Flutter Demo Home Page'),
-      ) ,
+      home: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (BuildContext context) => Counter()),
+          ChangeNotifierProvider(create: (BuildContext context) => Counter2())
+        ],
+        child: const MyHomePage(title: 'Flutter Demo Home Page')
+      ),
     );
   }
 }
@@ -56,10 +60,32 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => context.read<Counter>().increment(),
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: () =>  context.read<Counter>().increment(), //Provider.of<Counter>(context, listen: false).increment(), //alternativa
+            tooltip: 'Increment',
+            child: const Icon(Icons.add),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 15),
+            child: FloatingActionButton(
+              onPressed: () =>  context.read<Counter2>().increment2(), //Provider.of<Counter>(context, listen: false).increment(), //alternativa
+              tooltip: 'Increment',
+              child: const Stack(
+                children: [
+                  Icon(Icons.add),
+                  Positioned(
+                    left: 5,
+                    bottom: 5,
+                    child: Icon(Icons.add,),
+                  ),
+                ],
+              ),
+            ),
+          )
+        ],
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
